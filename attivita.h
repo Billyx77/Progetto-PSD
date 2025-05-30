@@ -11,7 +11,7 @@ typedef struct {
     int id;                                // Identificativo univoco dell'attivita
     char descrizione[MAX_DESCRIZIONE];     // Descrizione dell'attivita (max 30 caratteri)
     char corso[MAX_CORSO];                 // Nome del corso (max 20 caratteri)
-    char data_scadenza[MAX_DATA];          // Data dell'attivita (max 11 caratteri) GG/MM/AAAA
+    char data_scadenza[MAX_DATA];          // Data dell'attivita (max 11 caratteri) AAAA/MM/GG
     char tempo_stimato[MAX_TEMPO];         // Tempo stimato per completare l'attivita (max 2 caratteri) HH
     int priorita;                          // Priorita dell'attivita  1 = alta, 2 = media, 3 = bassa
     bool completata;                       // Variabile per completare una attivita
