@@ -1,0 +1,99 @@
+========================================================================
+Specifica Sintattica e Semantica
+========================================================================
+
+1. Specifica Sintattica
+
+-------------------------------------------------------------
+Tipi:
+-------------------------------------------------------------
+- Attivita;
+  Un record che rappresenta un'attivita ed è definito come:
+    - int id				-> Identificativo univoco dell'attivita
+    - char descrizione[MAX_DESCRIZIONE] -> Descrizione dell'attivita (stringa, massimo 30 caratteri)
+    - char corso[MAX_CORSO]		-> Corso dell'attivita (stringa, massimo 20 caratteri)
+    - char data_scadenza[MAX_DATA]	-> Data della scadenza dell'attivita (stringa, massimo 11 caratteri)
+    - char tempo_stimato[MAX_TEMPO]	-> Tempo stimato per completare l'attivita (stringa, massimo 2 caratteri)
+    - int priorita			-> Priorita dell'attivita (1 = alta, 2 = media, 3 = bassa)
+    - bool completata			-> Variabile per completare una attivita
+
+- AttivitaList
+  Un puntatore a una struttura che rappresenta una lista concatenata di attivita
+  La struttura interna è nascosta agli utilizzatori
+
+-------------------------------------------------------------
+Operatori:
+-------------------------------------------------------------
+1. AttivitaList NuovaAttivitaList(void);
+   • Descrizione: Crea e restituisce una lista vuota
+   • Specifica: Restituisce una lista l tale che l->head == NULL
+
+2. bool EmptyAttivitaList(AttivitaList list);
+   • Descrizione: Verifica se la lista è vuota
+   • Specifica: Restituisce true se list == NULL o se list->head == NULL, false altrimenti
+
+3. AttivitaList AggiungiAttivita(AttivitaList list, Attivita att);
+   • Descrizione: Inserisce una nuova attivita in testa alla lista
+   • Specifica: Se la lista iniziale è [a₁, a₂, …, aₙ], AggiungiAttivita(l, att) restituisce [att, a₁, a₂, …, aₙ]
+
+4. void VisualizzaAttivita(AttivitaList list);
+   • Descrizione: Permette di visualizzare tutte le attivita
+   • Specifica: Stampa in output i dati delle attivita o della lista
+ 
+5. void SegnaCompletata(AttivitaList list, int id);
+   • Descrizione: Segna l'attivita con identificativo `id` come completata (se presente)
+   • Specifica: Se esiste un'attivita a in list tale che a.id == id, pone a.completata = true
+
+6. void GeneraReportSettimanale(AttivitaList list, const char* data_inizio, const char* data_fine);
+   • Descrizione: Genera un report con le attivita che hanno scadenza compresa tra due date
+   • Specifica: Stampa le attivita con data_scadenza tale che data_inizio ≤ data ≤ data_fine
+
+7. int DataCompresa(const char* data, const char* data_inizio, const char* data_fine);
+   • Descrizione: Verifica se la data è compresa tra `data_inizio` e `data_fine` (incluse)
+   • Specifica: Restituisce true se data_inizio ≤ data ≤ data_fine; altrimenti false: 
+
+8. Attivita* TrovaAttivitaPerId(AttivitaList list, int id);
+   • Descrizione: Trova l'attivita grazie all'id fornito
+   • Specifica: Se esiste un'attivita a con a.id == att.id, la restituisce altrimenti restituisce Null
+
+9. void DistruggiAttivitaList(AttivitaList list);
+   • Descrizione: Libera tutta la memoria associata alla lista
+   • Specifica: Dealloca tutti i nodi della lista e infine la struttura `list`
+
+10. void Menu(AttivitaList list);
+   • Descrizione: Fornisce un menu a interfaccia testuale per interagire con l'utente
+   • Specifica: Mostra all'utente un menu con opzioni per inserire, visualizzare, completare o modificare attivita
+
+========================================================================
+Specifica Semantica
+========================================================================
+
+1. NuovaAttivitaList(void)
+   • Postcondizione: Ritorna una lista l tale che l->head == NULL (lista vuota)
+
+2. EmptyAttivitaList(AttivitaList list)
+   • Postcondizione: Restituisce true se l == NULL o l->head == NULL; altrimenti false
+
+3. AggiungiAttivita(AttivitaList list, Attivita att)
+   • Postcondizione: Se l = [a₁, a₂, …, aₙ], AggiungiAttivita(l, att) restituisce l' = [att, a₁, a₂, …, aₙ]
+
+4. VisualizzaAttivita(AttivitaList list)
+   • Postcondizione: Stampa tutte le attivita presenti nella lista, in ordine LIFO (inserimento in testa)
+
+5. SegnaCompletata(AttivitaList list, int id)
+   • Postcondizione: Se esiste un'attivita con id == id, imposta completata = true; altrimenti stampa un messaggio di errore
+
+6. GeneraReportSettimanale(AttivitaList list, const char* data_inizio, const char* data_fine)
+   • Postcondizione: Stampa tutte le attivita con data_scadenza compresa nell’intervallo [data_inizio, data_fine]
+
+7. DataCompresa(const char* data, const char* data_inizio, const char* data_fine)
+   • Postcondizione: Restituisce true se data è alfabeticamente tra data_inizio e data_fine (AAAAMMGG); false altrimenti
+
+8. TrovaAttivitaPerId(AttivitaList list, int id)
+   • Postcondizione: Se esiste un'attivita con id corrispondente, restituisce un puntatore a essa; altrimenti NULL
+
+9. DistruggiAttivitaList(AttivitaList list)
+   • Postcondizione: Libera tutti i nodi della lista e la struttura principale
+
+10. Menu(AttivitaList list)
+   • Effetto: Gestisce l'interazione con l'utente, eseguendo operazioni sulla lista in base alla scelta dell’utente
