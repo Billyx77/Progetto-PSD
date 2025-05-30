@@ -48,7 +48,7 @@ void VisualizzaAttivita(AttivitaList list) {
     Node* current = list->head;
     printf("\n-- Attivita di Studio --\n");
     while (current != NULL) {
-        printf("ID: %d | Descrizione: %s | Corso: %s | Scadenza: %s | Tempo: %s | Priorita: %d | Stato: %s\n",
+        printf("ID: %d | Descrizione: %s | Corso: %s | Scadenza: %s | Tempo: %sh | Priorita: %d | Stato: %s\n",
                current->att.id,
                current->att.descrizione,
                current->att.corso,
@@ -75,19 +75,51 @@ void SegnaCompletata(AttivitaList list, int id) {
     printf("Attivita con ID %d non trovata.\n", id);
 }
 
+int DataCompresa(const char* data, const char* data_inizio, const char* data_fine) {
+    return strcmp(data, data_inizio) >= 0 && strcmp(data, data_fine) <= 0;
+}
+
 // Funzione: GeneraReportSettimanale
 // Genera un report settimanale di tutte le attivita
-void GeneraReportSettimanale(AttivitaList list) {
+void GeneraReportSettimanale(AttivitaList list, const char* data_inizio, const char* data_fine) {
     Node* current = list->head;
-    printf("\n--- Report Settimanale ---\n");
+    printf("\n--- Report Settimanale (%s - %s) ---\n", data_inizio, data_fine);
+
     while (current != NULL) {
-        printf("ID: %d | Corso: %s | Scadenza: %s | Stato: %s\n",
-               current->att.id,
-               current->att.corso,
-               current->att.data_scadenza,
-               current->att.completata ? "Completata" : "In ritardo o in corso");
+        if (DataCompresa(current->att.data_scadenza, data_inizio, data_fine)) {
+            printf("ID: %d | Corso: %s | Scadenza: %s | Stato: %s\n",
+                   current->att.id,
+                   current->att.corso,
+                   current->att.data_scadenza,
+                   current->att.completata ? "Completata" : "In ritardo o in corso");
+        }
         current = current->next;
     }
+}
+
+Attivita* TrovaAttivitaPerId(AttivitaList list, int id) {
+    Node* current = list->head;
+    while (current != NULL) {
+        if (current->att.id == id) {
+            return &current->att;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+// Deallocazione della lista attivita
+void DistruggiAttivitaList(AttivitaList list) {
+    if (list == NULL) return;
+
+    Node* current = list->head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    free(list);
 }
 
 // Funzione: Menu
@@ -99,6 +131,7 @@ void Menu(AttivitaList list) {
         printf("\n2. Segna completata");
         printf("\n3. Mostra attivita");
         printf("\n4. Report settimanale");
+        printf("\n5. Modifica attivita");
         printf("\n0. Esci\nScelta: ");
         scanf("%d", &scelta);
 
@@ -111,7 +144,7 @@ void Menu(AttivitaList list) {
                 scanf("%s", a.descrizione);
                 printf("Corso: "); 
                 scanf("%s", a.corso);
-                printf("Data scadenza (gg/mm/aaaa): "); 
+                printf("Data scadenza (AAAA/MM/GG): "); 
                 scanf("%s", a.data_scadenza);
                 printf("Tempo stimato (es. 2h): "); 
                 scanf("%s", a.tempo_stimato);
@@ -135,11 +168,53 @@ void Menu(AttivitaList list) {
                 break;
 
             case 4:
-                GeneraReportSettimanale(list);
+                char data_inizio[11], data_fine[11]; 
+
+                printf("Inserisci data inizio (AAAA/MM/GG): ");
+                scanf("%10s", data_inizio);
+
+                printf("Inserisci data fine (AAAA/MM/GG): ");
+                scanf("%10s", data_fine);
+
+                GeneraReportSettimanale(list, data_inizio, data_fine);
                 break;
+
+            
+            case 5: {
+    int id, oreDaSottrarre, ore_attuali;
+    printf("Inserisci l'ID dell'attivita: ");
+    scanf("%d", &id);
+
+    Attivita* att = TrovaAttivitaPerId(list, id);
+    if (att == NULL) {
+        printf("Attivita non trovata.\n");
+        break;
+    }
+
+    // Parsing delle ore da stringa (es. "2h")
+    sscanf(att->tempo_stimato, "%dh", &ore_attuali);
+
+    printf("Ore attuali: %d\n", ore_attuali);
+    printf("Quante ore vuoi sottrarre? ");
+    scanf("%d", &oreDaSottrarre);
+
+    ore_attuali -= oreDaSottrarre;
+
+    if (ore_attuali <= 0) {
+        printf("Attivita completata!\n");
+        att->completata = true;
+        strcpy(att->tempo_stimato, "0h");
+    } else {
+        printf("Attivita in corso. Ore rimanenti: %d\n", ore_attuali);
+        printf(att->tempo_stimato, "%dh", ore_attuali);
+    }
+
+    break;
+}
 
             case 0:
                 printf("Uscita dal programma.\n");
+                DistruggiAttivitaList(list);
                 break;
 
             default:
