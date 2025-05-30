@@ -25,7 +25,16 @@ void VisualizzaAttivita(AttivitaList list);
 void SegnaCompletata(AttivitaList list, int id);
 
 // Genere un report settimanale di tutte le attivita
-void GeneraReportSettimanale(AttivitaList list);
+void GeneraReportSettimanale(AttivitaList list, const char* data_inizio, const char* data_fine);
+
+//Controlla le attivita tra le date inserite
+int DataCompresa(const char* data, const char* data_inizio, const char* data_fine);
+
+// Cerca l'attivita in base all'id
+Attivita* TrovaAttivitaPerId(AttivitaList list, int id);
+
+// Dealloca la lista attivita
+void DistruggiAttivitaList(AttivitaList list);
 
 // Fornisce un interfaccia grafica per interagire con il programma
 void Menu(AttivitaList list);
