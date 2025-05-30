@@ -7,6 +7,7 @@
 int main() {
     AttivitaList list = NuovaAttivitaList();
 
+    // INIZIO CASI DI TEST
     // === 1. Verifica inserimento attività ===
     Attivita a1 = {1, "Progetto", "PSD", "2025/06/10", "3", 1, false};
     Attivita a2 = {2, "Esercizio", "MMI", "2025/06/08", "2", 2, false};
@@ -53,7 +54,8 @@ int main() {
     // === 3. Verifica generazione report settimanale ===
     printf("\n>>> [TEST 3] Report tra 2025/06/01 e 2025/06/12:\n");
     GeneraReportSettimanale(list, "2025/06/01", "2025/06/12");
-
+    // FINE CASI DI TEST
+    
     Menu(list);
     
     return 0;
